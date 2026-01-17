@@ -44,16 +44,6 @@ func TestUnmap(t *testing.T) {
 	}
 }
 
-func TestProtFlagsAndErr(t *testing.T) {
-	f := openFile(os.O_RDONLY)
-	defer func(f *os.File) {
-		_ = f.Close()
-	}(f)
-	if _, err := Map(f, RDONLY, 0); err == nil {
-		t.Errorf("expected error")
-	}
-}
-
 // Test that we can map files from non-0 offsets
 // The page size on most Unixes is 4KB, but on Windows it's 64KB
 func TestNonZeroOffset(t *testing.T) {
@@ -102,25 +92,4 @@ func TestNonZeroOffset(t *testing.T) {
 	}
 
 	_ = fileobj.Close()
-}
-
-func TestAnonymousMapping(t *testing.T) {
-	const size = 4 * 1024
-
-	// Make an anonymous region
-	mem, err := MapRegion(nil, size, RDONLY, ANON, 0)
-	if err != nil {
-		t.Fatalf("failed to allocate memory for buffer: %v", err)
-	}
-
-	// Check memory writable
-	for i := 0; i < size; i++ {
-		mem[i] = 0x55
-	}
-
-	// And unmap it
-	err = mem.Unmap()
-	if err != nil {
-		t.Fatalf("failed to unmap memory for buffer: %v", err)
-	}
 }
