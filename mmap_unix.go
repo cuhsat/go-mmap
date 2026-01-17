@@ -21,6 +21,7 @@ func mmap(len int, _, inflags, fd uintptr, off int64) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return b, nil
 }
 
